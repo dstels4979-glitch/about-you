@@ -13,6 +13,11 @@
 const Navigation = (() => {
   const flatScreens = [];
 
+  // Always the very first screen. Users who already picked a language in a
+  // previous session simply resume past it (their saved screenIndex is
+  // already further along), so this never gets in the way of returning users.
+  flatScreens.push({ kind: "language" });
+
   flatScreens.push({ kind: "welcome" });
 
   THEMES.forEach((theme, themeIndex) => {
