@@ -467,7 +467,7 @@ const THEMES = [
 ];
 
 const WELCOME_SCREEN = {
-  title: { ru: "Привет 👋", uz: "Salom 👋", en: "Hi 👋" },
+  title: { ru: "Привет 🌝", uz: "Salom 🌝", en: "Hi 🌝" },
   text: {
     ru: "Это небольшая анкета, которая поможет мне узнать тебя ещё лучше. Здесь нет правильных или неправильных ответов — просто будь собой.",
     uz: "Bu meni seni yanada yaxshiroq bilishimga yordam beradigan kichik anketa. Bu yerda to'g'ri yoki noto'g'ri javoblar yo'q — shunchaki o'zing bo'l.",
