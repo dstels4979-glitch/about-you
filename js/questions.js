@@ -51,9 +51,10 @@ const Renderer = (() => {
     input.addEventListener("input", () => {
       Store.setAnswer(question.id, input.value);
       onAnswered(input.value);
+      onValidityChange(input.value.trim().length > 0);
     });
     container.appendChild(input);
-    onValidityChange(true);
+    onValidityChange(input.value.trim().length > 0);
   }
 
   // ---------- textarea ----------
@@ -66,9 +67,10 @@ const Renderer = (() => {
     textarea.addEventListener("input", () => {
       Store.setAnswer(question.id, textarea.value);
       onAnswered(textarea.value);
+      onValidityChange(textarea.value.trim().length > 0);
     });
     container.appendChild(textarea);
-    onValidityChange(true);
+    onValidityChange(textarea.value.trim().length > 0);
   }
 
   // ---------- text-with-checkbox ----------
@@ -91,6 +93,7 @@ const Renderer = (() => {
       const value = { text: input.value, checked: checkbox.checked };
       Store.setAnswer(question.id, value);
       onAnswered(value);
+      onValidityChange(input.value.trim().length > 0);
     }
 
     input.addEventListener("input", persist);
@@ -98,7 +101,7 @@ const Renderer = (() => {
 
     container.appendChild(input);
     container.appendChild(label);
-    onValidityChange(true);
+    onValidityChange(input.value.trim().length > 0);
   }
 
   // ---------- single-choice / yesno-branch ----------
@@ -172,7 +175,7 @@ const Renderer = (() => {
     function persist() {
       Store.setAnswer(question.id, saved);
       onAnswered(saved);
-      onValidityChange(true); // multi-choice never blocks progress
+      onValidityChange(saved.selected.length > 0); // need at least one pick to proceed
     }
 
     // `option` is either a real {value,label} from data.js, or a synthetic
@@ -272,7 +275,7 @@ const Renderer = (() => {
       container.appendChild(inputRow);
     }
 
-    onValidityChange(true);
+    onValidityChange(saved.selected.length > 0);
   }
 
   const renderers = {
