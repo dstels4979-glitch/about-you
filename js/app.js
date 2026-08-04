@@ -81,15 +81,40 @@
     const screen = Navigation.getScreen(index);
 
     if (screen.kind === "welcome") {
-      applyTheme(null);
-      root.appendChild(buildWelcomeScreen());
-    } else if (screen.kind === "final") {
-      applyTheme(null);
-      root.appendChild(buildFinalScreen());
-    } else if (screen.kind === "question") {
-      applyTheme(screen.theme.theme);
-      root.appendChild(buildQuestionScreen(screen));
-    }
+  applyTheme(null);
+
+  document.body.style.backgroundImage =
+    "url('assets/backgrounds/welcome.jpg')";
+  document.body.style.backgroundSize = "cover";
+  document.body.style.backgroundPosition = "center";
+  document.body.style.backgroundRepeat = "no-repeat";
+  document.body.style.backgroundAttachment = "fixed";
+
+  root.appendChild(buildWelcomeScreen());
+
+} else if (screen.kind === "final") {
+  applyTheme(null);
+
+  document.body.style.backgroundImage =
+    "url('assets/backgrounds/final.jpg')";
+  document.body.style.backgroundSize = "cover";
+  document.body.style.backgroundPosition = "center";
+  document.body.style.backgroundRepeat = "no-repeat";
+  document.body.style.backgroundAttachment = "fixed";
+
+  root.appendChild(buildFinalScreen());
+
+} else if (screen.kind === "question") {
+  applyTheme(screen.theme.theme);
+
+  document.body.style.backgroundImage = "";
+  document.body.style.backgroundSize = "";
+  document.body.style.backgroundPosition = "";
+  document.body.style.backgroundRepeat = "";
+  document.body.style.backgroundAttachment = "";
+
+  root.appendChild(buildQuestionScreen(screen));
+}
 
     updateProgress(index);
     requestAnimationFrame(() => {
