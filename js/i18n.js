@@ -42,6 +42,8 @@ const I18N = (() => {
       sentOk: "Ответы доставлены ✓",
       sendError: "Не получилось отправить 😔 Нажми, чтобы попробовать снова",
       retry: "Попробовать снова",
+      restart: "Пройти анкету заново",
+      restartConfirm: "Начать заново? Твои текущие ответы будут удалены.",
     },
     uz: {
       chooseLanguageTitle: "Tilni tanlang",
@@ -58,6 +60,8 @@ const I18N = (() => {
       sentOk: "Javoblar yetkazildi ✓",
       sendError: "Yuborib bo'lmadi 😔 Qayta urinish uchun bosing",
       retry: "Qayta urinish",
+      restart: "Anketani qaytadan boshlash",
+      restartConfirm: "Qaytadan boshlaysanmi? Hozirgi javoblaring o'chiriladi.",
     },
     en: {
       chooseLanguageTitle: "Choose your language",
@@ -74,6 +78,8 @@ const I18N = (() => {
       sentOk: "Answers delivered ✓",
       sendError: "Couldn't send 😔 Tap to try again",
       retry: "Try again",
+      restart: "Start the quiz over",
+      restartConfirm: "Start over? Your current answers will be deleted.",
     },
   };
 
