@@ -603,6 +603,26 @@ body {
   color: #b3452f;
 }
 
+.final-restart {
+  display: block;
+  margin: 22px auto 0;
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  font-weight: 600;
+  background: none;
+  border: none;
+  color: var(--theme-accent);
+  opacity: 0.55;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  transition: opacity 0.25s var(--ease);
+}
+
+.final-restart:hover {
+  opacity: 0.9;
+}
+
 /* =========================================================
    REDUCED MOTION
    ========================================================= */
