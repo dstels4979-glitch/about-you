@@ -106,6 +106,17 @@
     }
   }
 
+  // Wipes all saved answers/progress/sent-status and sends the person back
+  // to the very first screen. Used by the "Start over" link on the final
+  // screen, so a returning visitor isn't stuck re-clicking "Back" through
+  // 44 questions just to fill the quiz out again.
+  function restart() {
+    Store.reset();
+    telegramSendInProgress = false;
+    updateLangSwitchActive();
+    goTo(0, { skipAnimation: true });
+  }
+
   function renderScreen(index) {
     root.innerHTML = "";
     const screen = Navigation.getScreen(index);
@@ -220,6 +231,13 @@
     doneBtn.addEventListener("click", () => {
       if (!Store.isSent()) attemptSend();
     });
+
+    const restartLink = el("button", "final-restart", I18N.t(L, "restart"));
+    restartLink.type = "button";
+    restartLink.addEventListener("click", () => {
+      if (window.confirm(I18N.t(L, "restartConfirm"))) restart();
+    });
+    screen.appendChild(restartLink);
 
     return screen;
   }
