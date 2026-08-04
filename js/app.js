@@ -1,9 +1,11 @@
 /**
  * APP
  * ---
- * Wires Store + Navigation + Renderer together: draws whichever screen is
- * current, animates between screens, applies the active theme's palette,
- * and drives the progress indicator.
+ * Wires Store + Navigation + Renderer + Telegram together: draws whichever
+ * screen is current, animates between screens, applies the active theme's
+ * palette, drives the progress indicator, handles the language screen +
+ * persistent language switcher, and delivers the finished quiz to Telegram
+ * once the final screen is reached.
  */
 
 (function () {
@@ -11,9 +13,14 @@
   const progressFill = document.getElementById("progress-bar-fill");
   const progressText = document.getElementById("progress-text");
   const progressWrap = document.getElementById("progress-wrap");
+  const langSwitchButtons = Array.from(document.querySelectorAll(".lang-switch__btn"));
 
   Store.load();
   let currentIndex = clampToValidScreen(Store.getScreenIndex());
+
+  function currentLang() {
+    return Store.getLang() || I18N.DEFAULT_LANG;
+  }
 
   function clampToValidScreen(index) {
     // If a saved index landed on a since-skipped question, roll forward.
@@ -51,8 +58,31 @@
     progressWrap.classList.remove("progress-wrap--hidden");
     const pct = Math.round((progress.step / progress.total) * 100);
     progressFill.style.width = pct + "%";
-    progressText.textContent = `Шаг ${progress.step} из ${progress.total} · ${pct}% завершено`;
+    progressText.textContent = I18N.t(currentLang(), "progress", progress.step, progress.total, pct);
   }
+
+  function updateLangSwitchActive() {
+    const active = currentLang();
+    langSwitchButtons.forEach((btn) => {
+      btn.classList.toggle("lang-switch__btn--active", btn.dataset.lang === active);
+    });
+  }
+
+  function setLanguage(lang) {
+    Store.setLang(lang);
+    updateLangSwitchActive();
+    renderScreen(currentIndex); // re-draw current screen's text in the new language, no transition
+  }
+
+  langSwitchButtons.forEach((btn) => {
+    btn.addEventListener("click", () => setLanguage(btn.dataset.lang));
+  });
+  updateLangSwitchActive();
+
+  // Guards the final screen against firing a second Telegram delivery
+  // while one is already in flight (e.g. if the language switcher is
+  // clicked, re-rendering the final screen, while sending is pending).
+  let telegramSendInProgress = false;
 
   function el(tag, className, text) {
     const node = document.createElement(tag);
@@ -80,41 +110,19 @@
     root.innerHTML = "";
     const screen = Navigation.getScreen(index);
 
-    if (screen.kind === "welcome") {
-  applyTheme(null);
-
-  document.body.style.backgroundImage =
-    "url('assets/backgrounds/welcome.jpg')";
-  document.body.style.backgroundSize = "cover";
-  document.body.style.backgroundPosition = "center";
-  document.body.style.backgroundRepeat = "no-repeat";
-  document.body.style.backgroundAttachment = "fixed";
-
-  root.appendChild(buildWelcomeScreen());
-
-} else if (screen.kind === "final") {
-  applyTheme(null);
-
-  document.body.style.backgroundImage =
-    "url('assets/backgrounds/final.jpg')";
-  document.body.style.backgroundSize = "cover";
-  document.body.style.backgroundPosition = "center";
-  document.body.style.backgroundRepeat = "no-repeat";
-  document.body.style.backgroundAttachment = "fixed";
-
-  root.appendChild(buildFinalScreen());
-
-} else if (screen.kind === "question") {
-  applyTheme(screen.theme.theme);
-
-  document.body.style.backgroundImage = "";
-  document.body.style.backgroundSize = "";
-  document.body.style.backgroundPosition = "";
-  document.body.style.backgroundRepeat = "";
-  document.body.style.backgroundAttachment = "";
-
-  root.appendChild(buildQuestionScreen(screen));
-}
+    if (screen.kind === "language") {
+      applyTheme(null);
+      root.appendChild(buildLanguageScreen());
+    } else if (screen.kind === "welcome") {
+      applyTheme(null);
+      root.appendChild(buildWelcomeScreen());
+    } else if (screen.kind === "final") {
+      applyTheme(null);
+      root.appendChild(buildFinalScreen());
+    } else if (screen.kind === "question") {
+      applyTheme(screen.theme.theme);
+      root.appendChild(buildQuestionScreen(screen));
+    }
 
     updateProgress(index);
     requestAnimationFrame(() => {
@@ -122,28 +130,97 @@
     });
   }
 
+  function buildLanguageScreen() {
+    const screen = el("section", "screen screen--welcome screen--language");
+    screen.appendChild(el("h1", "welcome-title", I18N.t(currentLang(), "chooseLanguageTitle")));
+    screen.appendChild(el("p", "welcome-text", I18N.t(currentLang(), "chooseLanguageText")));
+
+    const optionsWrap = el("div", "language-options");
+    I18N.LANGS.forEach((langInfo) => {
+      const btn = el("button", "language-card", langInfo.name);
+      btn.type = "button";
+      if (Store.getLang() === langInfo.code) btn.classList.add("language-card--selected");
+      btn.addEventListener("click", () => {
+        Store.setLang(langInfo.code);
+        updateLangSwitchActive();
+        goTo(Navigation.nextIndex(currentIndex));
+      });
+      optionsWrap.appendChild(btn);
+    });
+    screen.appendChild(optionsWrap);
+
+    return screen;
+  }
+
   function buildWelcomeScreen() {
+    const L = currentLang();
     const screen = el("section", "screen screen--welcome");
-    screen.appendChild(el("h1", "welcome-title", WELCOME_SCREEN.title));
-    screen.appendChild(el("p", "welcome-text", WELCOME_SCREEN.text));
-    const startBtn = el("button", "cta-button", WELCOME_SCREEN.cta);
+    screen.appendChild(el("h1", "welcome-title", I18N.tr(WELCOME_SCREEN.title, L)));
+    screen.appendChild(el("p", "welcome-text", I18N.tr(WELCOME_SCREEN.text, L)));
+    const startBtn = el("button", "cta-button", I18N.tr(WELCOME_SCREEN.cta, L));
     startBtn.type = "button";
-    startBtn.addEventListener("click", () => goTo(Navigation.nextIndex(0)));
+    startBtn.addEventListener("click", () => goTo(Navigation.nextIndex(currentIndex)));
     screen.appendChild(startBtn);
     return screen;
   }
 
   function buildFinalScreen() {
+    const L = currentLang();
     const screen = el("section", "screen screen--final");
-    screen.appendChild(el("h1", "final-title", FINAL_SCREEN.title));
-    screen.appendChild(el("p", "final-text", FINAL_SCREEN.text));
-    const doneBtn = el("button", "cta-button", FINAL_SCREEN.cta);
+    screen.appendChild(el("h1", "final-title", I18N.tr(FINAL_SCREEN.title, L)));
+    screen.appendChild(el("p", "final-text", I18N.tr(FINAL_SCREEN.text, L)));
+
+    const statusText = el("p", "final-status", "");
+    screen.appendChild(statusText);
+
+    const doneBtn = el("button", "cta-button", I18N.tr(FINAL_SCREEN.cta, L));
     doneBtn.type = "button";
-    doneBtn.addEventListener("click", () => {
-      doneBtn.disabled = true;
-      doneBtn.textContent = "Готово ✨";
-    });
     screen.appendChild(doneBtn);
+
+    function setStatus(text, variant) {
+      statusText.textContent = text;
+      statusText.className = "final-status" + (variant ? ` final-status--${variant}` : "");
+    }
+
+    function attemptSend() {
+      if (telegramSendInProgress) return;
+      telegramSendInProgress = true;
+      doneBtn.disabled = true;
+      setStatus(I18N.t(L, "sending"), "pending");
+      Telegram.send()
+        .then(() => {
+          telegramSendInProgress = false;
+          Store.markSent();
+          setStatus(I18N.t(L, "sentOk"), "ok");
+          doneBtn.textContent = I18N.tr(FINAL_SCREEN.cta, L);
+          doneBtn.disabled = true;
+        })
+        .catch((err) => {
+          telegramSendInProgress = false;
+          console.warn("Telegram delivery failed:", err);
+          setStatus(I18N.t(L, "sendError"), "error");
+          doneBtn.textContent = I18N.t(L, "retry");
+          doneBtn.disabled = false;
+        });
+    }
+
+    if (Store.isSent()) {
+      setStatus(I18N.t(L, "sentOk"), "ok");
+      doneBtn.disabled = true;
+    } else if (telegramSendInProgress) {
+      setStatus(I18N.t(L, "sending"), "pending");
+      doneBtn.disabled = true;
+    } else {
+      // Deliver automatically as soon as the final screen is reached —
+      // no extra click required. The button becomes a manual retry if it
+      // failed (e.g. no network), and stays disabled once delivery succeeds.
+      attemptSend();
+    }
+
+    doneBtn.addEventListener("click", () => {
+      if (!Store.isSent()) attemptSend();
+    });
+
     return screen;
   }
 
@@ -157,13 +234,14 @@
   }
 
   function buildQuestionScreen(screen) {
+    const L = currentLang();
     const { theme, question } = screen;
     const wrapper = el("section", "screen screen--question");
 
     if (screen.isFirstOfTheme) {
       const header = el("div", "theme-header");
       const emoji = el("div", "theme-header__emoji", theme.emoji);
-      const title = el("h2", "theme-header__title", theme.title);
+      const title = el("h2", "theme-header__title", I18N.tr(theme.title, L));
       header.appendChild(emoji);
       header.appendChild(title);
       if (theme.themeImage) {
@@ -174,15 +252,15 @@
       wrapper.appendChild(header);
     }
 
-    wrapper.appendChild(el("h3", "question-prompt", question.prompt));
+    wrapper.appendChild(el("h3", "question-prompt", I18N.tr(question.prompt, L)));
 
     const fieldWrap = el("div", "question-field");
     wrapper.appendChild(fieldWrap);
 
     const nav = el("div", "screen-nav");
-    const backBtn = el("button", "nav-button nav-button--back", "Назад");
+    const backBtn = el("button", "nav-button nav-button--back", I18N.t(L, "back"));
     backBtn.type = "button";
-    const nextBtn = el("button", "nav-button nav-button--next", "Далее");
+    const nextBtn = el("button", "nav-button nav-button--next", I18N.t(L, "next"));
     nextBtn.type = "button";
     nextBtn.disabled = true;
 
@@ -216,7 +294,7 @@
     const { question } = screen;
     if (question.type === "yesno-branch" && question.branch && answerValue === question.branch.on) {
       question.branch.skip.forEach((id) => Store.markSkipped(id));
-      buildInterstitial(question.branch.interstitial, () => {
+      buildInterstitial(I18N.tr(question.branch.interstitial, currentLang()), () => {
         goTo(Navigation.nextThemeStartIndex(currentIndex), { skipAnimation: false });
       });
       return;
