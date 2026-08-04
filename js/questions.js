@@ -10,9 +10,18 @@
  * `onValidityChange(bool)` toggles whether "Далее" is enabled.
  * `onAnswered(value)` is called on every change, mainly so app.js can
  * react to yes/no branch answers immediately.
+ *
+ * LANGUAGE: the current interface language is read directly from
+ * Store.getLang() (defaulting to "ru") — every label/placeholder that
+ * comes from data.js is a {ru,uz,en} object and is resolved with
+ * I18N.tr(obj, lang) right before it's shown.
  */
 
 const Renderer = (() => {
+  function lang() {
+    return Store.getLang() || I18N.DEFAULT_LANG;
+  }
+
   function el(tag, className, text) {
     const node = document.createElement(tag);
     if (className) node.className = className;
@@ -34,9 +43,10 @@ const Renderer = (() => {
 
   // ---------- text ----------
   function renderText(question, container, { onValidityChange, onAnswered }) {
+    const L = lang();
     const input = el("input", "field-input");
     input.type = "text";
-    input.placeholder = question.placeholder || "Твой ответ…";
+    input.placeholder = question.placeholder ? I18N.tr(question.placeholder, L) : I18N.t(L, "defaultTextPlaceholder");
     input.value = Store.getAnswer(question.id) || "";
     input.addEventListener("input", () => {
       Store.setAnswer(question.id, input.value);
@@ -48,9 +58,10 @@ const Renderer = (() => {
 
   // ---------- textarea ----------
   function renderTextarea(question, container, { onValidityChange, onAnswered }) {
+    const L = lang();
     const textarea = el("textarea", "field-textarea");
     textarea.rows = 4;
-    textarea.placeholder = question.placeholder || "Пиши сколько угодно…";
+    textarea.placeholder = question.placeholder ? I18N.tr(question.placeholder, L) : I18N.t(L, "defaultTextareaPlaceholder");
     textarea.value = Store.getAnswer(question.id) || "";
     textarea.addEventListener("input", () => {
       Store.setAnswer(question.id, textarea.value);
@@ -62,10 +73,11 @@ const Renderer = (() => {
 
   // ---------- text-with-checkbox ----------
   function renderTextWithCheckbox(question, container, { onValidityChange, onAnswered }) {
+    const L = lang();
     const saved = Store.getAnswer(question.id) || { text: "", checked: false };
     const input = el("input", "field-input");
     input.type = "text";
-    input.placeholder = question.placeholder || "Твой ответ…";
+    input.placeholder = question.placeholder ? I18N.tr(question.placeholder, L) : I18N.t(L, "defaultTextPlaceholder");
     input.value = saved.text;
 
     const label = el("label", "checkbox-row");
@@ -73,7 +85,7 @@ const Renderer = (() => {
     checkbox.type = "checkbox";
     checkbox.checked = saved.checked;
     label.appendChild(checkbox);
-    label.appendChild(el("span", null, question.checkboxLabel));
+    label.appendChild(el("span", null, I18N.tr(question.checkboxLabel, L)));
 
     function persist() {
       const value = { text: input.value, checked: checkbox.checked };
@@ -91,19 +103,20 @@ const Renderer = (() => {
 
   // ---------- single-choice / yesno-branch ----------
   function renderSingleChoice(question, container, { onValidityChange, onAnswered }) {
+    const L = lang();
     const wrap = el("div", "options-list");
     const saved = Store.getAnswer(question.id);
 
-    question.options.forEach((optionValue) => {
-      const btn = el("button", "option-pill", optionValue);
+    question.options.forEach((option) => {
+      const btn = el("button", "option-pill", I18N.tr(option.label, L));
       btn.type = "button";
-      if (saved === optionValue) btn.classList.add("option-pill--selected");
+      if (saved === option.value) btn.classList.add("option-pill--selected");
       btn.addEventListener("click", () => {
         wrap.querySelectorAll(".option-pill").forEach((b) => b.classList.remove("option-pill--selected"));
         btn.classList.add("option-pill--selected");
-        Store.setAnswer(question.id, optionValue);
+        Store.setAnswer(question.id, option.value);
         onValidityChange(true);
-        onAnswered(optionValue);
+        onAnswered(option.value);
       });
       wrap.appendChild(btn);
     });
@@ -114,6 +127,7 @@ const Renderer = (() => {
 
   // ---------- cards ----------
   function renderCards(question, container, { onValidityChange, onAnswered }) {
+    const L = lang();
     const wrap = el("div", "cards-grid");
     const saved = Store.getAnswer(question.id);
 
@@ -130,7 +144,7 @@ const Renderer = (() => {
         imgSlot.textContent = "";
       }
 
-      const labelSlot = el("div", "choice-card__label", opt.value);
+      const labelSlot = el("div", "choice-card__label", I18N.tr(opt.label, L));
       card.appendChild(imgSlot);
       card.appendChild(labelSlot);
 
@@ -151,6 +165,7 @@ const Renderer = (() => {
 
   // ---------- multi-choice ----------
   function renderMultiChoice(question, container, { onValidityChange, onAnswered }) {
+    const L = lang();
     const saved = Store.getAnswer(question.id) || { selected: [], sub: {}, custom: [] };
     const wrap = el("div", "options-list");
 
@@ -160,9 +175,12 @@ const Renderer = (() => {
       onValidityChange(true); // multi-choice never blocks progress
     }
 
-    function makeOptionChip(optionValue) {
+    // `option` is either a real {value,label} from data.js, or a synthetic
+    // one built on the fly for a user-typed custom entry (label === value).
+    function makeOptionChip(option) {
+      const optionValue = option.value;
       const row = el("div", "multi-option-row");
-      const chip = el("button", "option-pill", optionValue);
+      const chip = el("button", "option-pill", I18N.tr(option.label, L));
       chip.type = "button";
       const isSelected = () => saved.selected.includes(optionValue);
       if (isSelected()) chip.classList.add("option-pill--selected");
@@ -174,7 +192,7 @@ const Renderer = (() => {
         cb.type = "checkbox";
         cb.checked = !!saved.sub[optionValue];
         subCheckboxLabel.appendChild(cb);
-        subCheckboxLabel.appendChild(el("span", null, question.subOption.label));
+        subCheckboxLabel.appendChild(el("span", null, I18N.tr(question.subOption.label, L)));
         subCheckboxLabel.style.display = isSelected() ? "flex" : "none";
         cb.addEventListener("change", () => {
           saved.sub[optionValue] = cb.checked;
@@ -190,7 +208,7 @@ const Renderer = (() => {
           if (subCheckboxLabel) subCheckboxLabel.style.display = "none";
         } else {
           if (question.maxSelect && saved.selected.length >= question.maxSelect) {
-            showToast(question.limitMessage || `Можно выбрать не более ${question.maxSelect} вариантов`);
+            showToast(I18N.tr(question.limitMessage, L) || `${question.maxSelect}`);
             return;
           }
           saved.selected.push(optionValue);
@@ -205,24 +223,27 @@ const Renderer = (() => {
       return row;
     }
 
-    question.options.forEach((optionValue) => wrap.appendChild(makeOptionChip(optionValue)));
+    question.options.forEach((option) => wrap.appendChild(makeOptionChip(option)));
 
-    // previously added custom options
+    // previously added custom (free-typed) options — not present in question.options
+    const knownValues = question.options.map((o) => o.value);
     saved.custom.forEach((customValue) => {
-      if (!question.options.includes(customValue)) wrap.appendChild(makeOptionChip(customValue));
+      if (!knownValues.includes(customValue)) {
+        wrap.appendChild(makeOptionChip({ value: customValue, label: customValue }));
+      }
     });
 
     container.appendChild(wrap);
 
     if (question.allowCustom) {
-      const addBtn = el("button", "add-custom-btn", "+ Добавить свой вариант");
+      const addBtn = el("button", "add-custom-btn", I18N.t(L, "addCustom"));
       addBtn.type = "button";
       const inputRow = el("div", "add-custom-row");
       inputRow.style.display = "none";
       const input = el("input", "field-input");
       input.type = "text";
-      input.placeholder = "Свой вариант…";
-      const confirmBtn = el("button", "add-custom-confirm", "Добавить");
+      input.placeholder = I18N.t(L, "customPlaceholder");
+      const confirmBtn = el("button", "add-custom-confirm", I18N.t(L, "addConfirm"));
       confirmBtn.type = "button";
 
       function commitCustom() {
@@ -230,7 +251,7 @@ const Renderer = (() => {
         if (!value) return;
         saved.custom.push(value);
         saved.selected.push(value);
-        wrap.appendChild(makeOptionChip(value));
+        wrap.appendChild(makeOptionChip({ value, label: value }));
         input.value = "";
         inputRow.style.display = "none";
         persist();
