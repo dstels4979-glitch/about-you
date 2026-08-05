@@ -14,6 +14,9 @@
   const progressText = document.getElementById("progress-text");
   const progressWrap = document.getElementById("progress-wrap");
   const langSwitchButtons = Array.from(document.querySelectorAll(".lang-switch__btn"));
+  const bgLayers = [document.getElementById("bg-layer-a"), document.getElementById("bg-layer-b")];
+  let activeBgIndex = 0;
+  let currentBgUrl = null;
 
   Store.load();
   let currentIndex = clampToValidScreen(Store.getScreenIndex());
@@ -47,6 +50,50 @@
     body.style.setProperty("--theme-accent", themeTokens.accent);
     body.style.setProperty("--theme-bg-from", themeTokens.bgFrom);
     body.style.setProperty("--theme-bg-to", themeTokens.bgTo);
+  }
+
+  // Which photo (if any) belongs behind this screen. Checked in order:
+  // the question's own backgroundImage, then its theme's, then the
+  // welcome/final screen's — falling back to `null` (plain colour
+  // gradient) when nobody has set an image yet.
+  function resolveBackgroundImage(screen) {
+    if (screen.kind === "language" || screen.kind === "welcome") {
+      return WELCOME_SCREEN.backgroundImage || null;
+    }
+    if (screen.kind === "final") {
+      return FINAL_SCREEN.backgroundImage || null;
+    }
+    if (screen.kind === "question") {
+      return screen.question.backgroundImage || screen.theme.backgroundImage || null;
+    }
+    return null;
+  }
+
+  // Crossfades the fixed full-page photo layer to a new image (or fades
+  // it out entirely when `url` is null, revealing the plain colour
+  // gradient). No-ops when the same image is already showing, so
+  // re-rendering the current screen (e.g. on a language switch) never
+  // causes a visible flicker.
+  function applyBackgroundImage(url) {
+    if (url === currentBgUrl) return;
+    currentBgUrl = url;
+
+    if (!url) {
+      bgLayers.forEach((layer) => layer.classList.remove("bg-image-layer--visible"));
+      return;
+    }
+
+    const nextIndex = 1 - activeBgIndex;
+    const nextLayer = bgLayers[nextIndex];
+    const currentLayer = bgLayers[activeBgIndex];
+
+    nextLayer.style.backgroundImage = `url("${url}")`;
+    // force a layout pass so the browser paints the new image before we
+    // animate its opacity in — otherwise the fade-in can get skipped
+    void nextLayer.offsetWidth;
+    nextLayer.classList.add("bg-image-layer--visible");
+    currentLayer.classList.remove("bg-image-layer--visible");
+    activeBgIndex = nextIndex;
   }
 
   function updateProgress(index) {
@@ -120,6 +167,7 @@
   function renderScreen(index) {
     root.innerHTML = "";
     const screen = Navigation.getScreen(index);
+    applyBackgroundImage(resolveBackgroundImage(screen));
 
     if (screen.kind === "language") {
       applyTheme(null);
