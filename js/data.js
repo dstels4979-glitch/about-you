@@ -61,7 +61,7 @@ const THEMES = [
       bgFrom: "#fbeef1",
       bgTo: "#f0d3da",
     },
-    backgroundImage: null, // put e.g. "assets/backgrounds/flowers.jpg" here later
+    backgroundImage: "images/flawers.jpg", // put e.g. "assets/backgrounds/flowers.jpg" here later
     themeImage: null, // put e.g. "assets/theme-images/flowers.png" here later
     questions: [
       {
