@@ -102,7 +102,7 @@ const THEMES = [
       bgFrom: "#fff3e2",
       bgTo: "#f8ddb8",
     },
-    backgroundImage: null,
+    backgroundImage: "images/eda.jpg",
     themeImage: null,
     questions: [
       {
