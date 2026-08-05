@@ -53,8 +53,41 @@ body {
 }
 
 /* =========================================================
+   FULL-PAGE BACKGROUND PHOTOS
+   ========================================================= */
+.bg-image-layer {
+  position: fixed;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 0.7s var(--ease);
+  pointer-events: none;
+}
+
+.bg-image-layer--visible {
+  opacity: 1;
+}
+
+/* soft tint in the theme's own palette on top of the photo, so each
+   theme still reads as its own colour identity and the glass cards /
+   progress bar keep good contrast, without hiding the picture itself */
+.bg-image-layer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--theme-bg-from) 32%, transparent) 0%,
+    color-mix(in srgb, var(--theme-bg-to) 40%, transparent) 100%
+  );
+}
+
+/* =========================================================
    LAYOUT SHELL
    ========================================================= */
+
 #progress-wrap {
   position: fixed;
   top: 0;
@@ -103,6 +136,8 @@ body {
 }
 
 #screen-root {
+  position: relative;
+  z-index: 1;
   min-height: 100vh;
   display: flex;
   align-items: center;
