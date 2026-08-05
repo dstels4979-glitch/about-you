@@ -511,7 +511,7 @@ const WELCOME_SCREEN = {
     en: "This is a little quiz to help me get to know you even better. There are no right or wrong answers here — just be yourself.",
   },
   cta: { ru: "Начать", uz: "Boshlash", en: "Start" },
-  backgroundImage: null, // shown behind the language-choice AND welcome screens; e.g. "assets/backgrounds/welcome.jpg"
+  backgroundImage: "images/backgroundImage.jpg" , // shown behind the language-choice AND welcome screens; e.g. "assets/backgrounds/welcome.jpg"
 };
 
 const FINAL_SCREEN = {
