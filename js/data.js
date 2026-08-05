@@ -62,7 +62,7 @@ const THEMES = [
       bgTo: "#f0d3da",
     },
     backgroundImage: "images/flawers.jpg", // put e.g. "assets/backgrounds/flowers.jpg" here later
-    themeImage: null, // put e.g. "assets/theme-images/flowers.png" here later
+    themeImage: "images/flowers.jpg", // put e.g. "assets/theme-images/flowers.png" here later
     questions: [
       {
         id: "flower_types",
