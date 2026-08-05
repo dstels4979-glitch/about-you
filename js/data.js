@@ -18,6 +18,18 @@
  * object (what the user sees). Keeping `value` stable means switching
  * the interface language mid-quiz never loses or reshuffles an answer.
  *
+ * BACKGROUND IMAGES: the whole screen behind the glass card can show a
+ * full-page photo (js/app.js crossfades smoothly between them as the
+ * user moves through the quiz). Three levels, checked in this order:
+ *   1. question.backgroundImage   — this exact question only
+ *   2. theme.backgroundImage      — every question of that theme that
+ *                                   doesn't set its own (1)
+ *   3. (none set)                 — falls back to the plain colour
+ *                                   gradient using that theme's palette
+ * WELCOME_SCREEN.backgroundImage / FINAL_SCREEN.backgroundImage work the
+ * same way for the language/welcome and thank-you screens. Just fill in
+ * a path (e.g. "assets/backgrounds/coffee.jpg") — nothing else to wire up.
+ *
  * Supported question `type` values:
  *   "textarea"        — free multi-line text, one open answer
  *   "text"             — free single-line text
@@ -119,6 +131,9 @@ const THEMES = [
         id: "coffee",
         type: "multi-choice",
         prompt: { ru: "Любимый кофе", uz: "Sevimli qahva", en: "Favorite coffee" },
+        // own background from here on — overrides the theme's "food" background
+        // put e.g. "assets/backgrounds/coffee.jpg" here
+        backgroundImage: null,
         options: [
           { value: "espresso", label: { ru: "Эспрессо", uz: "Espresso", en: "Espresso" } },
           { value: "americano", label: { ru: "Американо", uz: "Amerikano", en: "Americano" } },
@@ -139,6 +154,7 @@ const THEMES = [
         type: "text-with-checkbox",
         prompt: { ru: "Любимый чай", uz: "Sevimli choy", en: "Favorite tea" },
         checkboxLabel: { ru: "С сахаром", uz: "Shakar bilan", en: "With sugar" },
+        backgroundImage: null, // e.g. "assets/backgrounds/tea.jpg"
       },
       {
         id: "soda",
@@ -149,11 +165,32 @@ const THEMES = [
           uz: "Bir nechta variantni sanab o'tishing mumkin…",
           en: "You can list several options…",
         },
+        backgroundImage: null, // e.g. "assets/backgrounds/soda.jpg"
       },
-      { id: "desserts", type: "textarea", prompt: { ru: "Какие десерты ты любишь?", uz: "Qanday desertlarni yoqtirasan?", en: "What desserts do you like?" } },
-      { id: "chocolate", type: "textarea", prompt: { ru: "Какой шоколад тебе нравится?", uz: "Qanday shokolad senga yoqadi?", en: "What chocolate do you like?" } },
-      { id: "fruits", type: "textarea", prompt: { ru: "Какие фрукты ты любишь?", uz: "Qanday mevalarni yoqtirasan?", en: "What fruits do you like?" } },
-      { id: "berries", type: "textarea", prompt: { ru: "Какие ягоды тебе нравятся?", uz: "Qanday rezavorlar senga yoqadi?", en: "What berries do you like?" } },
+      {
+        id: "desserts",
+        type: "textarea",
+        prompt: { ru: "Какие десерты ты любишь?", uz: "Qanday desertlarni yoqtirasan?", en: "What desserts do you like?" },
+        backgroundImage: null, // e.g. "assets/backgrounds/desserts.jpg"
+      },
+      {
+        id: "chocolate",
+        type: "textarea",
+        prompt: { ru: "Какой шоколад тебе нравится?", uz: "Qanday shokolad senga yoqadi?", en: "What chocolate do you like?" },
+        backgroundImage: null, // e.g. "assets/backgrounds/chocolate.jpg"
+      },
+      {
+        id: "fruits",
+        type: "textarea",
+        prompt: { ru: "Какие фрукты ты любишь?", uz: "Qanday mevalarni yoqtirasan?", en: "What fruits do you like?" },
+        backgroundImage: null, // e.g. "assets/backgrounds/fruits.jpg"
+      },
+      {
+        id: "berries",
+        type: "textarea",
+        prompt: { ru: "Какие ягоды тебе нравятся?", uz: "Qanday rezavorlar senga yoqadi?", en: "What berries do you like?" },
+        backgroundImage: null, // e.g. "assets/backgrounds/berries.jpg"
+      },
     ],
   },
 
@@ -467,13 +504,14 @@ const THEMES = [
 ];
 
 const WELCOME_SCREEN = {
-  title: { ru: "Привет 🌝", uz: "Salom 🌝", en: "Hi 🌝" },
+  title: { ru: "Привет 👋", uz: "Salom 👋", en: "Hi 👋" },
   text: {
     ru: "Это небольшая анкета, которая поможет мне узнать тебя ещё лучше. Здесь нет правильных или неправильных ответов — просто будь собой.",
     uz: "Bu meni seni yanada yaxshiroq bilishimga yordam beradigan kichik anketa. Bu yerda to'g'ri yoki noto'g'ri javoblar yo'q — shunchaki o'zing bo'l.",
     en: "This is a little quiz to help me get to know you even better. There are no right or wrong answers here — just be yourself.",
   },
   cta: { ru: "Начать", uz: "Boshlash", en: "Start" },
+  backgroundImage: null, // shown behind the language-choice AND welcome screens; e.g. "assets/backgrounds/welcome.jpg"
 };
 
 const FINAL_SCREEN = {
@@ -484,4 +522,5 @@ const FINAL_SCREEN = {
     en: "It means a lot that you took the time to go through this little quiz. Now I know you a bit better. Thank you for your honesty and trust. 😊",
   },
   cta: { ru: "✨ Завершить", uz: "✨ Yakunlash", en: "✨ Finish" },
+  backgroundImage: null, // e.g. "assets/backgrounds/final.jpg"
 };
