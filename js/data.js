@@ -133,7 +133,7 @@ const THEMES = [
         prompt: { ru: "Любимый кофе", uz: "Sevimli qahva", en: "Favorite coffee" },
         // own background from here on — overrides the theme's "food" background
         // put e.g. "assets/backgrounds/coffee.jpg" here
-        backgroundImage: null,
+        backgroundImage: "images/coffee.jpg",
         options: [
           { value: "espresso", label: { ru: "Эспрессо", uz: "Espresso", en: "Espresso" } },
           { value: "americano", label: { ru: "Американо", uz: "Amerikano", en: "Americano" } },
