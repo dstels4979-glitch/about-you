@@ -320,6 +320,11 @@
 
     wrapper.appendChild(el("h3", "question-prompt", I18N.tr(question.prompt, L)));
 
+    if (question.type === "multi-choice") {
+      const hintText = question.maxSelect ? I18N.t(L, "multiSelectHintMax", question.maxSelect) : I18N.t(L, "multiSelectHint");
+      wrapper.appendChild(el("p", "question-hint", hintText));
+    }
+
     const fieldWrap = el("div", "question-field");
     wrapper.appendChild(fieldWrap);
 
