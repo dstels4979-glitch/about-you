@@ -126,6 +126,53 @@
   });
   updateLangSwitchActive();
 
+  // Background music: tries to autoplay immediately; browsers routinely
+  // block that without a prior user gesture, so if it's blocked we just
+  // wait for the very first click/tap anywhere on the page and start it
+  // then — which in practice happens within a second or two of arriving
+  // (picking a language, hitting Start…), so it reads as "starts itself".
+  // The button lets the person mute it at any time, and hides itself
+  // entirely if no audio file has been placed at the configured path yet.
+  (function initMusic() {
+    const music = document.getElementById("bg-music");
+    const toggleBtn = document.getElementById("music-toggle");
+    if (!music || !toggleBtn) return;
+
+    music.volume = 0.35;
+    let userMuted = false;
+
+    music.addEventListener("error", () => toggleBtn.classList.add("music-toggle--hidden"), { once: true });
+
+    function updateIcon() {
+      toggleBtn.textContent = music.paused ? "🔇" : "🔊";
+      toggleBtn.classList.toggle("music-toggle--muted", music.paused);
+    }
+
+    function attemptAutoplay() {
+      music.play().then(updateIcon).catch(() => {
+        const startOnFirstInteraction = () => {
+          if (!userMuted) music.play().then(updateIcon).catch(() => {});
+        };
+        document.addEventListener("click", startOnFirstInteraction, { once: true });
+        document.addEventListener("touchstart", startOnFirstInteraction, { once: true });
+      });
+    }
+
+    toggleBtn.addEventListener("click", () => {
+      if (music.paused) {
+        userMuted = false;
+        music.play().then(updateIcon).catch(() => {});
+      } else {
+        userMuted = true;
+        music.pause();
+        updateIcon();
+      }
+    });
+
+    updateIcon();
+    attemptAutoplay();
+  })();
+
   // Guards the final screen against firing a second Telegram delivery
   // while one is already in flight (e.g. if the language switcher is
   // clicked, re-rendering the final screen, while sending is pending).
@@ -372,6 +419,19 @@
     }
     goTo(Navigation.nextIndex(currentIndex));
   }
+
+  // Warn before leaving/refreshing while mid-quiz, so an accidental tab
+  // close doesn't feel like it lost progress (answers are actually safe in
+  // LocalStorage either way, but the browser's native warning is a good
+  // guard against genuinely walking away by accident). Doesn't fire on the
+  // language/welcome screen (nothing to lose yet) or once the final screen
+  // is reached (the quiz is done, no need to nag on the way out).
+  window.addEventListener("beforeunload", (event) => {
+    const screen = Navigation.getScreen(currentIndex);
+    if (screen.kind !== "question") return;
+    event.preventDefault();
+    event.returnValue = ""; // required by Chrome for the native confirm dialog to appear
+  });
 
   renderScreen(currentIndex);
 })();
