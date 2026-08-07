@@ -79,8 +79,8 @@ body {
   inset: 0;
   background: linear-gradient(
     160deg,
-    color-mix(in srgb, var(--theme-bg-from) 32%, transparent) 0%,
-    color-mix(in srgb, var(--theme-bg-to) 40%, transparent) 100%
+    color-mix(in srgb, var(--theme-bg-from) 16%, transparent) 0%,
+    color-mix(in srgb, var(--theme-bg-to) 20%, transparent) 100%
   );
 }
 
@@ -151,10 +151,10 @@ body {
 .screen {
   width: 100%;
   max-width: 560px;
-  background: rgba(255, 255, 255, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(22px) saturate(160%);
-  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
   border-radius: var(--radius-lg);
   padding: 44px 38px 38px;
   box-shadow: 0 30px 70px -25px rgba(30, 15, 35, 0.35), 0 2px 8px rgba(30, 15, 35, 0.06);
