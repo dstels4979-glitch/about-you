@@ -297,12 +297,19 @@ body {
 }
 
 .question-hint {
+  display: inline-block;
   font-family: var(--font-body);
-  font-size: 13px;
-  font-weight: 600;
-  margin: -16px 0 20px;
-  color: var(--theme-primary);
-  opacity: 0.75;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  margin: -14px 0 22px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  color: var(--theme-accent);
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .question-field {
