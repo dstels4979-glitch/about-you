@@ -171,7 +171,7 @@ const THEMES = [
         id: "desserts",
         type: "textarea",
         prompt: { ru: "Какие десерты ты любишь?", uz: "Qanday desertlarni yoqtirasan?", en: "What desserts do you like?" },
-        backgroundImage: "images/desert.jpeg", // e.g. "assets/backgrounds/desserts.jpg"
+        backgroundImage: "images/desert.jpg", // e.g. "assets/backgrounds/desserts.jpg"
       },
       {
         id: "chocolate",
