@@ -4,11 +4,31 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Хочу узнать тебя лучше!</title>
+
+  <!-- Link preview (Telegram / WhatsApp / iMessage / etc.) — shown when
+       someone pastes the site's URL into a chat instead of a bare link.
+       og:image needs a real photo at this path — put one (ideally a
+       landscape photo, roughly 1200×630px) at images/og-preview.jpg, or
+       change the path below to reuse one of your existing photos. -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Хочу узнать тебя лучше!" />
+  <meta property="og:description" content="Небольшая анкета, чтобы я узнал тебя ещё лучше ❤️" />
+  <meta property="og:image" content="https://dstels4979-glitch.github.io/about-you/images/og-preview.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Хочу узнать тебя лучше!" />
+  <meta name="twitter:description" content="Небольшая анкета, чтобы я узнал тебя ещё лучше ❤️" />
+  <meta name="twitter:image" content="https://dstels4979-glitch.github.io/about-you/images/og-preview.jpg" />
+
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
   <div id="bg-layer-a" class="bg-image-layer"></div>
   <div id="bg-layer-b" class="bg-image-layer"></div>
+
+  <!-- Background music — drop an mp3 at this path whenever you're ready;
+       until then the note button below just stays hidden automatically. -->
+  <audio id="bg-music" src="audio/background-music.mp3" loop preload="none"></audio>
+  <button type="button" id="music-toggle" class="music-toggle" aria-label="Toggle background music">🔊</button>
 
   <div id="lang-switch" aria-label="Language switcher">
     <button type="button" class="lang-switch__btn" data-lang="ru">RU</button>
