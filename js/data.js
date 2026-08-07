@@ -499,6 +499,8 @@ const THEMES = [
       { id: "never_do", type: "textarea", prompt: { ru: "Что никогда нельзя делать в отношениях?", uz: "Munosabatlarda hech qachon qilib bo'lmaydigan narsa nima?", en: "What should never be done in a relationship?" } },
       { id: "ideal_date", type: "textarea", prompt: { ru: "Каким ты представляешь идеальное свидание?", uz: "Ideal uchrashuvni qanday tasavvur qilasan?", en: "What does your ideal date look like?" } },
       { id: "attractive", type: "textarea", prompt: { ru: "Что делает человека привлекательным для тебя?", uz: "Sen uchun insonni jozibali qiladigan narsa nima?", en: "What makes a person attractive to you?" } },
+      { id: "dislikes_about_me", type: "textarea", prompt: { ru: "Что тебе во мне не нравится?", uz: "Menda senga nima yoqmaydi?", en: "What don't you like about me?" } },
+      { id: "would_change_about_me", type: "textarea", prompt: { ru: "Что бы ты хотела во мне изменить?", uz: "Menda nimani o'zgartirishni xohlagan bo'larding?", en: "What would you like to change about me?" } },
     ],
   },
 ];
