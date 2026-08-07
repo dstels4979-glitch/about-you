@@ -44,6 +44,8 @@ const I18N = (() => {
       retry: "Попробовать снова",
       restart: "Пройти анкету заново",
       restartConfirm: "Начать заново? Твои текущие ответы будут удалены.",
+      multiSelectHint: "Можно выбрать несколько вариантов",
+      multiSelectHintMax: (max) => `Можно выбрать до ${max} вариантов`,
     },
     uz: {
       chooseLanguageTitle: "Tilni tanlang",
@@ -62,6 +64,8 @@ const I18N = (() => {
       retry: "Qayta urinish",
       restart: "Anketani qaytadan boshlash",
       restartConfirm: "Qaytadan boshlaysanmi? Hozirgi javoblaring o'chiriladi.",
+      multiSelectHint: "Bir nechta variant tanlashingiz mumkin",
+      multiSelectHintMax: (max) => `${max} tagacha variant tanlashingiz mumkin`,
     },
     en: {
       chooseLanguageTitle: "Choose your language",
@@ -80,6 +84,8 @@ const I18N = (() => {
       retry: "Try again",
       restart: "Start the quiz over",
       restartConfirm: "Start over? Your current answers will be deleted.",
+      multiSelectHint: "You can select several options",
+      multiSelectHintMax: (max) => `You can select up to ${max} options`,
     },
   };
 
