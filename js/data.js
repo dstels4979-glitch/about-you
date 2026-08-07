@@ -254,7 +254,7 @@ const THEMES = [
       bgFrom: "#f2eef9",
       bgTo: "#ddd1ec",
     },
-    backgroundImage: null,
+    backgroundImage: "images/leto.jpeg" ,
     themeImage: null,
     questions: [
       {
