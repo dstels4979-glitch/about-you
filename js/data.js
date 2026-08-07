@@ -154,7 +154,7 @@ const THEMES = [
         type: "text-with-checkbox",
         prompt: { ru: "Любимый чай", uz: "Sevimli choy", en: "Favorite tea" },
         checkboxLabel: { ru: "С сахаром", uz: "Shakar bilan", en: "With sugar" },
-        backgroundImage: null, // e.g. "assets/backgrounds/tea.jpg"
+        backgroundImage: "images/tea.jpg", // e.g. "assets/backgrounds/tea.jpg"
       },
       {
         id: "soda",
@@ -165,31 +165,31 @@ const THEMES = [
           uz: "Bir nechta variantni sanab o'tishing mumkin…",
           en: "You can list several options…",
         },
-        backgroundImage: null, // e.g. "assets/backgrounds/soda.jpg"
+        backgroundImage: "images/gaz.jpg", // e.g. "assets/backgrounds/soda.jpg"
       },
       {
         id: "desserts",
         type: "textarea",
         prompt: { ru: "Какие десерты ты любишь?", uz: "Qanday desertlarni yoqtirasan?", en: "What desserts do you like?" },
-        backgroundImage: null, // e.g. "assets/backgrounds/desserts.jpg"
+        backgroundImage: "images/desert.jpg", // e.g. "assets/backgrounds/desserts.jpg"
       },
       {
         id: "chocolate",
         type: "textarea",
         prompt: { ru: "Какой шоколад тебе нравится?", uz: "Qanday shokolad senga yoqadi?", en: "What chocolate do you like?" },
-        backgroundImage: null, // e.g. "assets/backgrounds/chocolate.jpg"
+        backgroundImage: "images/chocolate.jpg", // e.g. "assets/backgrounds/chocolate.jpg"
       },
       {
         id: "fruits",
         type: "textarea",
         prompt: { ru: "Какие фрукты ты любишь?", uz: "Qanday mevalarni yoqtirasan?", en: "What fruits do you like?" },
-        backgroundImage: null, // e.g. "assets/backgrounds/fruits.jpg"
+        backgroundImage: "images/fruits.jpg", // e.g. "assets/backgrounds/fruits.jpg"
       },
       {
         id: "berries",
         type: "textarea",
         prompt: { ru: "Какие ягоды тебе нравятся?", uz: "Qanday rezavorlar senga yoqadi?", en: "What berries do you like?" },
-        backgroundImage: null, // e.g. "assets/backgrounds/berries.jpg"
+        backgroundImage: "images/yagoda.jpg", // e.g. "assets/backgrounds/berries.jpg"
       },
     ],
   },
@@ -205,7 +205,7 @@ const THEMES = [
       bgFrom: "#eef5ea",
       bgTo: "#d6e6cd",
     },
-    backgroundImage: null,
+    backgroundImage: "images/walk.jpg",
     themeImage: null,
     questions: [
       {
@@ -283,7 +283,7 @@ const THEMES = [
       bgFrom: "#eaf2f6",
       bgTo: "#cfe0e9",
     },
-    backgroundImage: null,
+    backgroundImage: "images/walk1.jpg",
     themeImage: null,
     questions: [
       { id: "makes_happy", type: "textarea", prompt: { ru: "Что тебя может очень сильно обрадовать?", uz: "Seni nima juda xursand qila oladi?", en: "What can make you really happy?" } },
@@ -306,7 +306,7 @@ const THEMES = [
       bgFrom: "#f8f1f5",
       bgTo: "#e6d3e0",
     },
-    backgroundImage: null,
+    backgroundImage: "images/support.jpg",
     themeImage: null,
     questions: [
       {
