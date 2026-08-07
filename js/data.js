@@ -392,7 +392,7 @@ const THEMES = [
       bgFrom: "#e5f2f5",
       bgTo: "#bfe0e8",
     },
-    backgroundImage: null,
+    backgroundImage: "images/travel.jpeg",
     themeImage: null,
     questions: [
       {
@@ -455,7 +455,7 @@ const THEMES = [
       bgFrom: "#f8e9ec",
       bgTo: "#e6c3cb",
     },
-    backgroundImage: null,
+    backgroundImage: "images/gifts.jpeg",
     themeImage: null,
     questions: [
       { id: "likes_gifts", type: "textarea", prompt: { ru: "Какие подарки тебе нравятся?", uz: "Qanday sovg'alar senga yoqadi?", en: "What kind of gifts do you like?" } },
@@ -474,7 +474,7 @@ const THEMES = [
       bgFrom: "#f6e6e8",
       bgTo: "#dcb3ba",
     },
-    backgroundImage: null,
+    backgroundImage: "images/otno.jpeg",
     themeImage: null,
     questions: [
       {
@@ -522,5 +522,5 @@ const FINAL_SCREEN = {
     en: "It means a lot that you took the time to go through this little quiz. Now I know you a bit better. Thank you for your honesty and trust. 😊",
   },
   cta: { ru: "✨ Завершить", uz: "✨ Yakunlash", en: "✨ Finish" },
-  backgroundImage: null, // e.g. "assets/backgrounds/final.jpg"
+  backgroundImage: "images/otno1.jpeg", // e.g. "assets/backgrounds/final.jpg"
 };
