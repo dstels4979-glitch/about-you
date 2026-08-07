@@ -565,6 +565,46 @@ body {
   box-shadow: 0 8px 20px -10px rgba(0, 0, 0, 0.25);
 }
 
+/* =========================================================
+   BACKGROUND MUSIC TOGGLE
+   ========================================================= */
+.music-toggle {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 30;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  line-height: 1;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 20px -10px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  opacity: 0.85;
+  transition: opacity 0.2s var(--ease), transform 0.15s var(--ease);
+}
+
+.music-toggle:hover {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+.music-toggle--muted {
+  opacity: 0.55;
+}
+
+/* hidden automatically until a real audio file is reachable at the
+   configured src — see the error listener in js/app.js */
+.music-toggle--hidden {
+  display: none;
+}
+
 .lang-switch__btn {
   font-family: var(--font-body);
   font-size: 12px;
